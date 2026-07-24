@@ -173,7 +173,7 @@
 
 
   /* === V8 : papier peint, lisibilité et historique système === */
-  .xp-desktop{background-image:linear-gradient(rgba(31,80,145,.08),rgba(18,82,28,.08)),url('assets/chronopif-wallpaper.png')!important;background-position:center center!important;background-size:cover!important;background-repeat:no-repeat!important}
+  .xp-desktop{background-image:linear-gradient(rgba(31,80,145,.08),rgba(18,82,28,.08)),url('assets_annex/truck_wallpaper.png')!important;background-position:center center!important;background-size:cover!important;background-repeat:no-repeat!important}
   .company-only{min-width:250px}.company-only b{font-size:18px;letter-spacing:.25px;color:#123861}.company-only small{font-size:11px}
   .time-only{margin-left:auto}.time-only .timecontrols{padding-left:8px;border-left:1px solid #c2bfae}
   .tray-button{border:1px solid rgba(255,255,255,.2);cursor:pointer}.tray-button:hover{background:rgba(255,255,255,.3)}.audio-toggle{min-width:34px;justify-content:center;padding:0 7px}
@@ -249,6 +249,7 @@
   <button class="task-btn active" id="taskWindowBtn">🚛 Centre de contrôle</button>
   <div class="taskbar-spacer"></div>
   <div class="tray-icons">
+    <button class="tray-pill tray-button" id="saveStatus" title="Sauvegarder maintenant">💾</button>
     <button class="tray-pill tray-button" id="decisionCount" title="Historique des appels">📞 0</button>
     <button class="tray-pill tray-action" id="tourCount" title="Historique des livraisons">🚛 0</button>
     <button class="tray-pill tray-button" id="notifSummary" title="Historique des notifications">🔔 0</button>
@@ -261,8 +262,14 @@
 <script>
 'use strict';
 
-const VERSION = '1.8.1';
-const SAVE_KEY = 'dispatch-idf-save-v2';
+const VERSION = '1.8.3';
+const APP_STORAGE_ID='dispatch-idf';
+const STORAGE_SCOPE=(()=>{const parts=location.pathname.split('/').filter(Boolean);return (parts[0]||'root').toLowerCase().replace(/[^a-z0-9_-]+/g,'-')})();
+const SAVE_KEY=`${APP_STORAGE_ID}:${STORAGE_SCOPE}:save-v1`;
+const SAVE_BACKUP_KEY=`${SAVE_KEY}:backup`;
+const SAVE_META_KEY=`${SAVE_KEY}:meta`;
+const LEGACY_SAVE_KEYS=['dispatch-idf-save-v3','dispatch-idf-save-v2','dispatch-idf-save-v1','dispatch-idf-save'];
+let saveStorageError='';
 const euro = n => new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR',maximumFractionDigits:0}).format(n);
 const num = n => new Intl.NumberFormat('fr-FR').format(Math.round(n));
 const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
@@ -272,7 +279,7 @@ const rnd=(a,b)=>Math.round(a+Math.random()*(b-a));
 const WEEKDAYS=['Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi','Dimanche'];
 const MONTHS=['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
 const GAME_EPOCH_UTC=Date.UTC(2026,0,1,0,0,0);
-const mainMusic=new Audio('assets/main-menu-1.mp3'), warningMusic=new Audio('assets/warning-alert.mp3');
+const mainMusic=new Audio('assets_annex/main_menu_1.mp3'), warningMusic=new Audio('assets_annex/warning_alert.mp3');
 mainMusic.loop=true;warningMusic.loop=true;mainMusic.preload='auto';warningMusic.preload='auto';mainMusic.volume=.34;warningMusic.volume=.52;
 let audioUnlocked=false,audioMuted=false,currentMusic='';
 const TRAVEL_TIME_FACTOR=.5; // Temps routiers recalibrés : deux fois plus rapides que la V3.
@@ -416,7 +423,7 @@ function makeContract(){
  return {id:uid('F'),client:pick(CLIENTS),origin,destination,cargo:cargo.name,weight,trailerType:cargo.type,distance:dist,payout,deadlineAbs,adr:!!cargo.adr,cold:!!cargo.cold,event:!!cargo.event,fragile:!!cargo.fragile,express:!!cargo.express,prestige:cargo.prestige||0,minRep:cargo.minRep||0,createdAbs:absTime(),risk:rnd(1,5)};
 }
 function initialState(){
- return {version:VERSION,setupComplete:false,company:'',day:1,hour:6,minute:0,cash:250000,reputation:50,reputationHistory:[],depot:'',trucks:[],trailers:[],drivers:[],contracts:[],candidates:[],usedTrucks:[],usedTrailers:[],activeTours:[],pendingDecision:null,decisionHistory:[],callHistory:[],unreadCalls:0,notifications:[],unreadNotifications:0,deliveryHistory:[],unreadDeliveries:0,logs:[],cashHistory:[250000],stats:{revenue:0,expenses:0,deliveries:0,onTime:0,incidents:0,emptyKm:0,totalKm:0,damagedLoads:0},weather:'Sec',traffic:'Fluide',tutorial:false,freightOnlyAcceptable:false};
+ return {version:VERSION,lastSavedAt:0,setupComplete:false,company:'',day:1,hour:6,minute:0,cash:250000,reputation:50,reputationHistory:[],depot:'',trucks:[],trailers:[],drivers:[],contracts:[],candidates:[],usedTrucks:[],usedTrailers:[],activeTours:[],pendingDecision:null,decisionHistory:[],callHistory:[],unreadCalls:0,notifications:[],unreadNotifications:0,deliveryHistory:[],unreadDeliveries:0,logs:[],cashHistory:[250000],stats:{revenue:0,expenses:0,deliveries:0,onTime:0,incidents:0,emptyKm:0,totalKm:0,damagedLoads:0},weather:'Sec',traffic:'Fluide',tutorial:false,freightOnlyAcceptable:false};
 }
 function makeUsedTruckListing(){
  const cat=pick(TRUCK_CATALOG),v=newTruck(cat.model,true),condition=averageCondition(v),ageFactor=clamp(1-v.km/1100000,.34,.78);
@@ -458,16 +465,43 @@ function addLog(type,label,amount=0,detail=''){
  state.logs.unshift({id:uid('L'),time:timeLabel(absTime()),type,label,amount,detail}); if(state.logs.length>120)state.logs.length=120;
  if(amount>0)state.stats.revenue+=amount; if(amount<0)state.stats.expenses+=Math.abs(amount);
 }
-function safeGetSave(){try{return localStorage.getItem(SAVE_KEY)}catch(e){return null}}
-function safeSetSave(){try{localStorage.setItem(SAVE_KEY,JSON.stringify(state))}catch(e){/* Mode privé ou fichier local restreint : la partie reste jouable. */}}
-function safeClearSave(){try{localStorage.removeItem(SAVE_KEY)}catch(e){}}
-function save(){safeSetSave();}
+function parseStoredSave(raw){
+ if(!raw)return null;
+ try{const parsed=JSON.parse(raw);return parsed&&typeof parsed==='object'&&('cash' in parsed||parsed.version)?parsed:null}catch(e){return null}
+}
+function saveScore(parsed){return Number(parsed?.lastSavedAt)||Number(parsed?.savedAt)||0}
+function getStorageCandidates(){
+ const keys=[SAVE_KEY,SAVE_BACKUP_KEY,...LEGACY_SAVE_KEYS],candidates=[];
+ try{for(const key of keys){const raw=localStorage.getItem(key),parsed=parseStoredSave(raw);if(parsed)candidates.push({key,raw,parsed,score:saveScore(parsed)})}}catch(e){saveStorageError=e?.message||'Stockage local indisponible'}
+ return candidates.sort((a,b)=>b.score-a.score)
+}
+function safeGetSave(){const best=getStorageCandidates()[0];return best?.raw||null}
+function updateSaveIndicator(ok=true){
+ const el=document.getElementById('saveStatus');if(!el)return;
+ el.textContent=ok?'💾':'⚠️';
+ const stamp=state?.lastSavedAt?new Date(state.lastSavedAt):null;
+ el.title=ok?(stamp?`Sauvegarde navigateur : ${stamp.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit',second:'2-digit'})}`:'Sauvegarde navigateur prête'):`Sauvegarde indisponible : ${saveStorageError}`;
+}
+function safeSetSave(){
+ try{
+  state.lastSavedAt=Date.now();
+  const raw=JSON.stringify(state),previous=localStorage.getItem(SAVE_KEY);
+  if(previous&&parseStoredSave(previous))localStorage.setItem(SAVE_BACKUP_KEY,previous);
+  localStorage.setItem(SAVE_KEY,raw);
+  localStorage.setItem(SAVE_META_KEY,JSON.stringify({version:VERSION,lastSavedAt:state.lastSavedAt,scope:STORAGE_SCOPE}));
+  saveStorageError='';updateSaveIndicator(true);return true;
+ }catch(e){saveStorageError=e?.message||'Stockage local indisponible';updateSaveIndicator(false);return false}
+}
+function safeClearSave(){try{[SAVE_KEY,SAVE_BACKUP_KEY,SAVE_META_KEY,...LEGACY_SAVE_KEYS].forEach(key=>localStorage.removeItem(key))}catch(e){}}
+function save(showToast=false){const ok=safeSetSave();if(showToast)toast(ok?'Partie sauvegardée dans ce navigateur.':'Sauvegarde bloquée par le navigateur. Exporte la partie depuis Finances.',ok?'good':'bad');return ok}
 function load(){
- try{const s=JSON.parse(safeGetSave());state=s&&s.version?{...initialState(),...s}:initialState()}catch(e){state=initialState()}
+ const candidates=getStorageCandidates(),sourceKey=candidates[0]?.key||'';
+ try{const s=candidates[0]?.parsed;state=s&&typeof s==='object'?{...initialState(),...s}:initialState()}catch(e){state=initialState()}
  state.version=VERSION;state.reputationHistory=Array.isArray(state.reputationHistory)?state.reputationHistory:[];state.decisionHistory=Array.isArray(state.decisionHistory)?state.decisionHistory:[];state.callHistory=Array.isArray(state.callHistory)?state.callHistory:state.decisionHistory.map((x,i)=>({id:`OLD${i}`,time:x.time,title:x.title||'Appel d’exploitation',text:'Historique importé depuis une ancienne sauvegarde.',position:'Position non enregistrée',status:'resolved',choice:x.choice||'',detail:x.detail||'',read:true}));state.unreadCalls=Number.isFinite(state.unreadCalls)?state.unreadCalls:0;state.notifications=Array.isArray(state.notifications)?state.notifications:[];state.unreadNotifications=Number.isFinite(state.unreadNotifications)?state.unreadNotifications:0;state.deliveryHistory=Array.isArray(state.deliveryHistory)?state.deliveryHistory:[];state.unreadDeliveries=Number.isFinite(state.unreadDeliveries)?state.unreadDeliveries:0;state.pendingDecision=state.pendingDecision&&typeof state.pendingDecision==='object'?state.pendingDecision:null;state.stats={revenue:0,expenses:0,deliveries:0,onTime:0,incidents:0,emptyKm:0,totalKm:0,damagedLoads:0,...(state.stats||{})};state.trucks=Array.isArray(state.trucks)?state.trucks:[];state.trailers=Array.isArray(state.trailers)?state.trailers:[];state.drivers=Array.isArray(state.drivers)?state.drivers:[];state.contracts=Array.isArray(state.contracts)?state.contracts:[];state.usedTrucks=Array.isArray(state.usedTrucks)?state.usedTrucks:[];state.usedTrailers=Array.isArray(state.usedTrailers)?state.usedTrailers:[];state.activeTours=Array.isArray(state.activeTours)?state.activeTours:[];[state.trucks,state.trailers,state.drivers,state.contracts,state.activeTours].forEach(list=>list.forEach(x=>{if(x&&x.id!=null)x.id=String(x.id)}));state.contracts=state.contracts.filter(c=>c&&validLocation(c.origin)&&validLocation(c.destination)&&Number.isFinite(Number(c.deadlineAbs)));
  state.drivers.forEach(d=>{d.continuousDriving=Number.isFinite(d.continuousDriving)?d.continuousDriving:0;d.drivingToday=Number.isFinite(d.drivingToday)?d.drivingToday:0;d.inactiveHours=Number.isFinite(d.inactiveHours)?d.inactiveHours:(d.drivingToday>0?0:11);d.restQualified=typeof d.restQualified==='boolean'?d.restQualified:d.inactiveHours>=11;d.injuredUntilAbs=Number.isFinite(d.injuredUntilAbs)?d.injuredUntilAbs:0;d.temporary=!!d.temporary;if(d.status==='injured'&&d.injuredUntilAbs<=absTime())d.status=d.assigned?'tour':'available'});
  state.activeTours.forEach(t=>{ensureTourShape(t);t.phase=t.phase||(t.progress<(t.deadheadKm||0)?'deadhead':'cargo');t.serviceRemaining=Number.isFinite(t.serviceRemaining)?t.serviceRemaining:0;t.regulatoryRemaining=Number.isFinite(t.regulatoryRemaining)?t.regulatoryRemaining:0;t.regulatoryType=t.regulatoryType||'';t.incidentRemaining=Number.isFinite(t.incidentRemaining)?t.incidentRemaining:(Number.isFinite(t.restRemaining)?t.restRemaining:0);t.eventCooldown=Number.isFinite(t.eventCooldown)?t.eventCooldown:0;t.events=Array.isArray(t.events)?t.events:[];t.event=!!t.event;t.legExtraKm=Number.isFinite(t.legExtraKm)?t.legExtraKm:0;t.routeOverrideLabel=t.routeOverrideLabel||'';delete t.restRemaining});if(state.pendingDecision&&!findById(state.activeTours,state.pendingDecision.tourId))state.pendingDecision=null;if(state.pendingDecision&&!state.callHistory.some(x=>String(x.id)===String(state.pendingDecision.id))){state.callHistory.unshift({id:state.pendingDecision.id,time:timeLabel(state.pendingDecision.createdAbs||absTime()),title:state.pendingDecision.title||'Appel d’exploitation',text:state.pendingDecision.text||'',position:state.pendingDecision.position||'Position à confirmer',status:'pending',choice:'',detail:'',read:false});state.unreadCalls=Math.max(1,state.unreadCalls||0)};
  if(state.setupComplete){if(!state.contracts.length)state.contracts=Array.from({length:freightMarketSize()},makeContract);if(!state.candidates.length)state.candidates=Array.from({length:candidateMarketSize()},newDriver);if(!state.usedTrucks.length)state.usedTrucks=Array.from({length:6},makeUsedTruckListing);if(!state.usedTrailers.length)state.usedTrailers=Array.from({length:6},makeUsedTrailerListing)}
+ if(sourceKey&&sourceKey!==SAVE_KEY)safeSetSave();
 }
 
 function conditionClass(v){return v>=70?'good':v>=40?'warn':'bad'}
@@ -499,7 +533,8 @@ function initShell(){
  document.getElementById('taskWindowBtn').onclick=e=>{e.stopPropagation();windowMinimized=!windowMinimized;startMenuOpen=false;syncWindowShell()};
  document.getElementById('minimizeWindow').onclick=e=>{e.stopPropagation();windowMinimized=true;syncWindowShell()};
  document.getElementById('restoreWindow').onclick=e=>{e.stopPropagation();windowMinimized=false;syncWindowShell()};
- document.getElementById('decisionCount').onclick=e=>{e.stopPropagation();showCallHistory()};document.getElementById('tourCount').onclick=e=>{e.stopPropagation();showDeliveryHistory()};document.getElementById('notifSummary').onclick=e=>{e.stopPropagation();showNotificationHistory()};document.getElementById('audioToggle').onclick=e=>{e.stopPropagation();toggleAudio()};document.addEventListener('pointerdown',e=>{if(e.target.closest?.('button,[role=button],select,.navbtn,.start-item,.desktop-shortcut'))playRetroClick()},{capture:true});
+ document.getElementById('decisionCount').onclick=e=>{e.stopPropagation();showCallHistory()};document.getElementById('tourCount').onclick=e=>{e.stopPropagation();showDeliveryHistory()};document.getElementById('notifSummary').onclick=e=>{e.stopPropagation();showNotificationHistory()};
+ document.getElementById('saveStatus')?.addEventListener('click',e=>{e.stopPropagation();save(true)});document.getElementById('audioToggle').onclick=e=>{e.stopPropagation();toggleAudio()};document.addEventListener('pointerdown',e=>{if(e.target.closest?.('button,[role=button],select,.navbtn,.start-item,.desktop-shortcut'))playRetroClick()},{capture:true});
  document.addEventListener('click',e=>{const menu=document.getElementById('startMenu'),btn=document.getElementById('startButton');if(startMenuOpen&&menu&&!menu.contains(e.target)&&btn&&!btn.contains(e.target)){startMenuOpen=false;syncWindowShell()}});
 }
 function navRender(){
@@ -843,6 +878,7 @@ document.getElementById('pauseBtn').onclick=()=>setPlay(0);document.getElementBy
 document.getElementById('view').addEventListener('pointerdown',e=>{const plan=e.target.closest?.('[data-plan]');if(plan){e.preventDefault();openPlanner(plan.dataset.plan)}});
 document.addEventListener('pointerdown',unlockAudio,{once:true,capture:true});document.addEventListener('keydown',unlockAudio,{once:true,capture:true});
 window.addEventListener('error',e=>{console.error(e.error||e.message);if(state?.setupComplete)toast('Une erreur interne a été interceptée. Le jeu continue sans clic silencieux.','bad')});
+window.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='s'){e.preventDefault();save(true)}});
 window.addEventListener('beforeunload',save);
 load();render();if(!state.setupComplete)setTimeout(showCompanySetup,180);else if(state.tutorial)setTimeout(tutorial,250);else if(state.pendingDecision)setTimeout(openPendingDecision,220);
 </script>
