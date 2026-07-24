@@ -173,7 +173,8 @@
 
 
   /* === V8 : papier peint, lisibilité et historique système === */
-  .xp-desktop{background-image:linear-gradient(rgba(31,80,145,.08),rgba(18,82,28,.08)),url('assets_annex/truck_wallpaper.png')!important;background-position:center center!important;background-size:cover!important;background-repeat:no-repeat!important}
+  :root{--desktop-wallpaper:url('assets_annex/wallpaper_port_sunset.png')}
+  .xp-desktop{background-image:linear-gradient(rgba(31,80,145,.08),rgba(18,82,28,.08)),var(--desktop-wallpaper)!important;background-position:center center!important;background-size:cover!important;background-repeat:no-repeat!important}
   .company-only{min-width:250px}.company-only b{font-size:18px;letter-spacing:.25px;color:#123861}.company-only small{font-size:11px}
   .time-only{margin-left:auto}.time-only .timecontrols{padding-left:8px;border-left:1px solid #c2bfae}
   .tray-button{border:1px solid rgba(255,255,255,.2);cursor:pointer}.tray-button:hover{background:rgba(255,255,255,.3)}.audio-toggle{min-width:34px;justify-content:center;padding:0 7px}
@@ -185,7 +186,50 @@
   .summaryline.total{color:#24633c!important}.ownership{color:#345779!important;background:#eef5fc}.maplegend{background:rgba(245,250,255,.94)!important;color:#415f80!important}.mapstatus .status{background:rgba(245,250,255,.94)!important}
   .history-modal{width:min(760px,100%)}.history-list{display:flex;flex-direction:column;gap:10px;max-height:58vh;overflow:auto;padding-right:4px}.history-item{display:grid;grid-template-columns:42px 1fr;gap:11px;padding:12px;border:1px solid #b6cee8;border-radius:9px;background:linear-gradient(180deg,#fff,#edf5fd);color:#173a61}.history-item.pending{border-color:#d9a62d;background:linear-gradient(180deg,#fff9df,#fff0bd)}.history-icon{width:42px;height:42px;display:grid;place-items:center;border-radius:8px;background:#dcecff;font-size:20px}.history-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.history-head b{color:#12365e}.history-head span{font-size:10px;color:#6a809a;white-space:nowrap}.history-item p{margin:5px 0;color:#405f80;font-size:12px;line-height:1.45}.history-item small{color:#6a809a}.history-result{margin-top:8px;padding:8px 9px;border-radius:7px;background:#e1edf9;color:#254e78;font-size:11px}
   .weekday strong{display:block;color:#1c4b7d;font-size:11px;margin-bottom:2px}
-  @media(max-width:780px){.company-only{min-width:auto}.company-only small{display:none}.tray-icons{gap:3px}.tray-pill{padding:0 5px}.audio-toggle{display:none}}
+  @media(max-width:780px){.company-only{min-width:auto}.company-only small{display:none}.tray-icons{gap:3px}.tray-pill{padding:0 5px}}
+
+
+  .start-section-title{padding:8px 10px 4px;font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:#6f83a0;font-weight:700}
+  .optiongrid{display:grid;grid-template-columns:1.1fr .9fr;gap:18px}
+  .optionpanel{border:1px solid #b6cee8;border-radius:12px;background:linear-gradient(180deg,#fff,#eef5ff);padding:14px}
+  .optionpanel h3{margin:0 0 10px;color:#143d68;font-size:17px}
+  .optionpanel p{margin:0 0 12px;color:#57708b;font-size:12px;line-height:1.45}
+  .optionactions{display:flex;flex-wrap:wrap;gap:10px}
+  .wallpapergrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+  .wallpapercard{border:1px solid #a7c1dc;background:#fff;border-radius:12px;padding:8px;cursor:pointer;text-align:left;transition:.12s transform,.12s box-shadow,.12s border-color}
+  .wallpapercard:hover{transform:translateY(-1px);box-shadow:0 6px 16px rgba(31,80,145,.15)}
+  .wallpapercard.active{border-color:#2a74d6;box-shadow:0 0 0 2px rgba(42,116,214,.18)}
+  .wallpapercard img{width:100%;height:92px;object-fit:cover;border-radius:8px;display:block;margin-bottom:8px}
+  .wallpapercard b{display:block;color:#173b63;font-size:13px}
+  .wallpapercard small{display:block;color:#6b829d;font-size:11px;margin-top:3px}
+  .optionform{display:grid;gap:10px}
+  .optionrow{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .optionrow .field{flex:1;min-width:200px}
+  .field input.inputline{width:100%;padding:10px 12px;border-radius:8px;border:1px solid #aac4df;background:#fff;color:#17395f;font:inherit}
+  .dangerzone{margin-top:12px;padding-top:12px;border-top:1px dashed #b8cae1}
+  .mutedline{font-size:12px;color:#67809b}
+  body.boot-active .xp-taskbar,body.boot-active .startmenu{display:none!important}
+  body.boot-active .xp-desktop{inset:0!important}
+  .boot-overlay{position:fixed;inset:0;z-index:10000;background:linear-gradient(180deg,#0c3da4 0%,#7da6ef 10%,#6c8fe1 100%);display:none;overflow:hidden}
+  .boot-overlay.show{display:block}
+  .boot-overlay::before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,rgba(255,255,255,.10),transparent 48%);pointer-events:none}
+  .boot-inner{position:absolute;inset:34px 4vw 58px;display:grid;grid-template-columns:minmax(0,1fr) minmax(330px,.82fr);align-items:center;gap:4vw;color:#fff}
+  .boot-left{min-width:0;padding:20px 4vw 20px 1vw;border-right:1px solid rgba(255,255,255,.20)}
+  .boot-title{font-size:clamp(54px,8vw,108px);font-weight:800;letter-spacing:.01em;line-height:.92;margin:0;text-shadow:0 3px 15px rgba(0,0,0,.18)}
+  .boot-title small{display:block;font-size:clamp(18px,2.1vw,30px);font-weight:600;opacity:.93;margin-top:18px;letter-spacing:.02em}
+  .boot-disclaimer{margin-top:42px;max-width:660px;padding:18px 20px;border-left:4px solid rgba(255,255,255,.65);background:rgba(17,57,145,.20);font-size:14px;line-height:1.55;color:rgba(255,255,255,.92)}
+  .boot-disclaimer b{color:#fff}.boot-goodgame{display:block;margin-top:12px;font-size:18px;font-weight:700;color:#fff}
+  .boot-right{display:flex;flex-direction:column;max-width:470px;justify-self:end;width:100%}
+  .boot-user{display:flex;align-items:center;gap:16px;padding:16px 18px;border-radius:14px;border:1px solid rgba(255,255,255,.28);background:linear-gradient(90deg,rgba(9,46,136,.94),rgba(69,118,217,.92));box-shadow:0 12px 32px rgba(0,0,0,.22);color:#fff;text-align:left;cursor:pointer;width:100%}
+  .boot-user:hover{filter:brightness(1.05)}
+  .boot-avatar{width:64px;height:64px;border-radius:10px;background:linear-gradient(180deg,#17336a,#07162f);display:grid;place-items:center;font-size:31px;box-shadow:inset 0 0 0 2px rgba(255,255,255,.13)}
+  .boot-user b{display:block;font-size:clamp(22px,2.7vw,32px);margin-bottom:5px}
+  .boot-user small{display:block;font-size:14px;color:rgba(255,255,255,.88)}
+  .boot-footer{position:absolute;left:0;right:0;bottom:0;height:44px;background:#0b2fa5;display:flex;align-items:center;padding:0 24px;color:#fff}
+  .boot-power{display:flex;align-items:center;gap:10px;font-size:18px;font-weight:700}
+  .boot-power::before{content:'⏻';display:grid;place-items:center;width:23px;height:23px;border-radius:5px;background:#e5784c;color:#fff;font-size:14px}
+  @media(max-width:760px){.optiongrid{grid-template-columns:1fr}.boot-inner{inset:22px 18px 54px;grid-template-columns:minmax(0,.9fr) minmax(180px,1.1fr);gap:18px}.boot-left{padding-right:18px}.boot-title{font-size:clamp(38px,11vw,64px)}.boot-title small{font-size:14px;margin-top:10px}.boot-disclaimer{margin-top:24px;padding:12px 13px;font-size:11px}.boot-goodgame{font-size:14px}.boot-user{padding:12px;gap:10px}.boot-avatar{width:48px;height:48px;font-size:24px}.boot-user b{font-size:18px}.boot-user small{font-size:11px}.boot-footer{height:38px}.boot-power{font-size:14px}}
+
 
 
   /* V8.1 : suppression définitive des anciens blocs sombres */
@@ -241,6 +285,28 @@
     </div>
   </div>
 
+  <div class="boot-overlay" id="bootOverlay">
+    <div class="boot-inner">
+      <div class="boot-left">
+        <div class="boot-title">Dispatch !<small>Simulation d'exploitation routière</small></div>
+        <div class="boot-disclaimer">
+          <b>Dispatch !</b> est un jeu pensé et imaginé par <b>Le Chroniqueur Vagabond</b>, puis programmé avec l'aide d'outils d'intelligence artificielle.<br>
+          Le jeu est actuellement en version bêta. Certains éléments pourront être ajoutés, modifiés ou rééquilibrés, et quelques bugs peuvent encore surgir au détour d'un quai.
+          <span class="boot-goodgame">Bonne partie à toutes et à tous !</span>
+        </div>
+      </div>
+      <div class="boot-right">
+        <button class="boot-user" id="bootProfile">
+          <div class="boot-avatar">🚛</div>
+          <div><b id="bootCompanyName">Nouvelle entreprise</b><small id="bootCompanyStatus">Session d'exploitation</small></div>
+        </button>
+      </div>
+    </div>
+    <div class="boot-footer">
+      <div class="boot-power">Arrêter l'ordinateur</div>
+    </div>
+  </div>
+
   <div class="toastbox" id="toasts"></div>
   <div id="modalRoot"></div>
 </div>
@@ -249,11 +315,9 @@
   <button class="task-btn active" id="taskWindowBtn">🚛 Centre de contrôle</button>
   <div class="taskbar-spacer"></div>
   <div class="tray-icons">
-    <button class="tray-pill tray-button" id="saveStatus" title="Sauvegarder maintenant">💾</button>
     <button class="tray-pill tray-button" id="decisionCount" title="Historique des appels">📞 0</button>
     <button class="tray-pill tray-action" id="tourCount" title="Historique des livraisons">🚛 0</button>
     <button class="tray-pill tray-button" id="notifSummary" title="Historique des notifications">🔔 0</button>
-    <button class="tray-pill tray-button audio-toggle" id="audioToggle" title="Activer ou couper la musique">🔊</button>
   </div>
   <div class="system-tray">
     <div class="tray-clock"><span id="trayTime">06:00</span><span id="trayDate">Lundi</span></div>
@@ -262,7 +326,7 @@
 <script>
 'use strict';
 
-const VERSION = '1.8.3';
+const VERSION = '1.8.5';
 const APP_STORAGE_ID='dispatch-idf';
 const STORAGE_SCOPE=(()=>{const parts=location.pathname.split('/').filter(Boolean);return (parts[0]||'root').toLowerCase().replace(/[^a-z0-9_-]+/g,'-')})();
 const SAVE_KEY=`${APP_STORAGE_ID}:${STORAGE_SCOPE}:save-v1`;
@@ -278,6 +342,16 @@ const pick=a=>a[Math.floor(Math.random()*a.length)];
 const rnd=(a,b)=>Math.round(a+Math.random()*(b-a));
 const WEEKDAYS=['Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi','Dimanche'];
 const MONTHS=['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
+const WALLPAPERS=[
+  {id:'wp_port',label:'Frein de Vie',src:'assets_annex/wallpaper_port_sunset.png'},
+  {id:'wp_alps',label:'STEFroide',src:'assets_annex/wallpaper_alps_cold.png'},
+  {id:'wp_marseille',label:'Chronopause',src:'assets_annex/wallpaper_marseille_night.png'},
+  {id:'wp_lyon',label:'Géodiz',src:'assets_annex/wallpaper_lyon_delivery.png'},
+  {id:'wp_vineyard',label:'Norbert Détoursangle',src:'assets_annex/wallpaper_vineyard_detour.png'},
+  {id:'wp_poulet',label:'Transports Couillard',src:'assets_annex/wallpaper_poulet_perdu.png'},
+  {id:'wp_strasbourg',label:'Déhèle Express',src:'assets_annex/wallpaper_strasbourg_dehele.png'},
+  {id:'wp_lille',label:'XPoto Logistique',src:'assets_annex/wallpaper_lille_xpoto.png'}
+];
 const GAME_EPOCH_UTC=Date.UTC(2026,0,1,0,0,0);
 const mainMusic=new Audio('assets_annex/main_menu_1.mp3'), warningMusic=new Audio('assets_annex/warning_alert.mp3');
 mainMusic.loop=true;warningMusic.loop=true;mainMusic.preload='auto';warningMusic.preload='auto';mainMusic.volume=.34;warningMusic.volume=.52;
@@ -423,7 +497,7 @@ function makeContract(){
  return {id:uid('F'),client:pick(CLIENTS),origin,destination,cargo:cargo.name,weight,trailerType:cargo.type,distance:dist,payout,deadlineAbs,adr:!!cargo.adr,cold:!!cargo.cold,event:!!cargo.event,fragile:!!cargo.fragile,express:!!cargo.express,prestige:cargo.prestige||0,minRep:cargo.minRep||0,createdAbs:absTime(),risk:rnd(1,5)};
 }
 function initialState(){
- return {version:VERSION,lastSavedAt:0,setupComplete:false,company:'',day:1,hour:6,minute:0,cash:250000,reputation:50,reputationHistory:[],depot:'',trucks:[],trailers:[],drivers:[],contracts:[],candidates:[],usedTrucks:[],usedTrailers:[],activeTours:[],pendingDecision:null,decisionHistory:[],callHistory:[],unreadCalls:0,notifications:[],unreadNotifications:0,deliveryHistory:[],unreadDeliveries:0,logs:[],cashHistory:[250000],stats:{revenue:0,expenses:0,deliveries:0,onTime:0,incidents:0,emptyKm:0,totalKm:0,damagedLoads:0},weather:'Sec',traffic:'Fluide',tutorial:false,freightOnlyAcceptable:false};
+ return {version:VERSION,lastSavedAt:0,setupComplete:false,company:'',day:1,hour:6,minute:0,cash:250000,reputation:50,reputationHistory:[],depot:'',trucks:[],trailers:[],drivers:[],contracts:[],candidates:[],usedTrucks:[],usedTrailers:[],activeTours:[],pendingDecision:null,decisionHistory:[],callHistory:[],unreadCalls:0,notifications:[],unreadNotifications:0,deliveryHistory:[],unreadDeliveries:0,logs:[],cashHistory:[250000],stats:{revenue:0,expenses:0,deliveries:0,onTime:0,incidents:0,emptyKm:0,totalKm:0,damagedLoads:0},weather:'Sec',traffic:'Fluide',tutorial:false,freightOnlyAcceptable:false,wallpaper:WALLPAPERS[0].id,audioMuted:false};
 }
 function makeUsedTruckListing(){
  const cat=pick(TRUCK_CATALOG),v=newTruck(cat.model,true),condition=averageCondition(v),ageFactor=clamp(1-v.km/1100000,.34,.78);
@@ -493,11 +567,17 @@ function safeSetSave(){
  }catch(e){saveStorageError=e?.message||'Stockage local indisponible';updateSaveIndicator(false);return false}
 }
 function safeClearSave(){try{[SAVE_KEY,SAVE_BACKUP_KEY,SAVE_META_KEY,...LEGACY_SAVE_KEYS].forEach(key=>localStorage.removeItem(key))}catch(e){}}
-function save(showToast=false){const ok=safeSetSave();if(showToast)toast(ok?'Partie sauvegardée dans ce navigateur.':'Sauvegarde bloquée par le navigateur. Exporte la partie depuis Finances.',ok?'good':'bad');return ok}
+function save(showToast=false){state.audioMuted=audioMuted;const ok=safeSetSave();if(showToast)toast(ok?'Partie sauvegardée dans ce navigateur.':'Sauvegarde bloquée par le navigateur. Exporte la partie depuis Finances.',ok?'good':'bad');return ok}
+function currentWallpaper(){return WALLPAPERS.find(w=>w.id===state?.wallpaper)||WALLPAPERS[0]}
+function applyWallpaper(id){const chosen=WALLPAPERS.find(w=>w.id===id)||WALLPAPERS[0];if(state)state.wallpaper=chosen.id;document.documentElement.style.setProperty('--desktop-wallpaper',`url('${chosen.src}')`);return chosen}
+function showStartupScreen(){document.getElementById('bootCompanyName').textContent=state?.company||'Nouvelle entreprise';document.getElementById('bootCompanyStatus').textContent=state?.setupComplete?`Dépôt principal · ${state.depot}`:'Cliquer pour créer l’entreprise';document.body.classList.add('boot-active');document.getElementById('bootOverlay').classList.add('show')}
+function hideStartupScreen(){document.getElementById('bootOverlay').classList.remove('show');document.body.classList.remove('boot-active')}
+function startSession(){hideStartupScreen();audioUnlocked=true;syncGameAudio();if(!state.setupComplete)setTimeout(showCompanySetup,120);else if(state.tutorial)setTimeout(tutorial,120);else if(state.pendingDecision)setTimeout(openPendingDecision,120)}
 function load(){
  const candidates=getStorageCandidates(),sourceKey=candidates[0]?.key||'';
  try{const s=candidates[0]?.parsed;state=s&&typeof s==='object'?{...initialState(),...s}:initialState()}catch(e){state=initialState()}
  state.version=VERSION;state.reputationHistory=Array.isArray(state.reputationHistory)?state.reputationHistory:[];state.decisionHistory=Array.isArray(state.decisionHistory)?state.decisionHistory:[];state.callHistory=Array.isArray(state.callHistory)?state.callHistory:state.decisionHistory.map((x,i)=>({id:`OLD${i}`,time:x.time,title:x.title||'Appel d’exploitation',text:'Historique importé depuis une ancienne sauvegarde.',position:'Position non enregistrée',status:'resolved',choice:x.choice||'',detail:x.detail||'',read:true}));state.unreadCalls=Number.isFinite(state.unreadCalls)?state.unreadCalls:0;state.notifications=Array.isArray(state.notifications)?state.notifications:[];state.unreadNotifications=Number.isFinite(state.unreadNotifications)?state.unreadNotifications:0;state.deliveryHistory=Array.isArray(state.deliveryHistory)?state.deliveryHistory:[];state.unreadDeliveries=Number.isFinite(state.unreadDeliveries)?state.unreadDeliveries:0;state.pendingDecision=state.pendingDecision&&typeof state.pendingDecision==='object'?state.pendingDecision:null;state.stats={revenue:0,expenses:0,deliveries:0,onTime:0,incidents:0,emptyKm:0,totalKm:0,damagedLoads:0,...(state.stats||{})};state.trucks=Array.isArray(state.trucks)?state.trucks:[];state.trailers=Array.isArray(state.trailers)?state.trailers:[];state.drivers=Array.isArray(state.drivers)?state.drivers:[];state.contracts=Array.isArray(state.contracts)?state.contracts:[];state.usedTrucks=Array.isArray(state.usedTrucks)?state.usedTrucks:[];state.usedTrailers=Array.isArray(state.usedTrailers)?state.usedTrailers:[];state.activeTours=Array.isArray(state.activeTours)?state.activeTours:[];[state.trucks,state.trailers,state.drivers,state.contracts,state.activeTours].forEach(list=>list.forEach(x=>{if(x&&x.id!=null)x.id=String(x.id)}));state.contracts=state.contracts.filter(c=>c&&validLocation(c.origin)&&validLocation(c.destination)&&Number.isFinite(Number(c.deadlineAbs)));
+ state.wallpaper=WALLPAPERS.some(w=>w.id===state.wallpaper)?state.wallpaper:WALLPAPERS[0].id;audioMuted=!!state.audioMuted;
  state.drivers.forEach(d=>{d.continuousDriving=Number.isFinite(d.continuousDriving)?d.continuousDriving:0;d.drivingToday=Number.isFinite(d.drivingToday)?d.drivingToday:0;d.inactiveHours=Number.isFinite(d.inactiveHours)?d.inactiveHours:(d.drivingToday>0?0:11);d.restQualified=typeof d.restQualified==='boolean'?d.restQualified:d.inactiveHours>=11;d.injuredUntilAbs=Number.isFinite(d.injuredUntilAbs)?d.injuredUntilAbs:0;d.temporary=!!d.temporary;if(d.status==='injured'&&d.injuredUntilAbs<=absTime())d.status=d.assigned?'tour':'available'});
  state.activeTours.forEach(t=>{ensureTourShape(t);t.phase=t.phase||(t.progress<(t.deadheadKm||0)?'deadhead':'cargo');t.serviceRemaining=Number.isFinite(t.serviceRemaining)?t.serviceRemaining:0;t.regulatoryRemaining=Number.isFinite(t.regulatoryRemaining)?t.regulatoryRemaining:0;t.regulatoryType=t.regulatoryType||'';t.incidentRemaining=Number.isFinite(t.incidentRemaining)?t.incidentRemaining:(Number.isFinite(t.restRemaining)?t.restRemaining:0);t.eventCooldown=Number.isFinite(t.eventCooldown)?t.eventCooldown:0;t.events=Array.isArray(t.events)?t.events:[];t.event=!!t.event;t.legExtraKm=Number.isFinite(t.legExtraKm)?t.legExtraKm:0;t.routeOverrideLabel=t.routeOverrideLabel||'';delete t.restRemaining});if(state.pendingDecision&&!findById(state.activeTours,state.pendingDecision.tourId))state.pendingDecision=null;if(state.pendingDecision&&!state.callHistory.some(x=>String(x.id)===String(state.pendingDecision.id))){state.callHistory.unshift({id:state.pendingDecision.id,time:timeLabel(state.pendingDecision.createdAbs||absTime()),title:state.pendingDecision.title||'Appel d’exploitation',text:state.pendingDecision.text||'',position:state.pendingDecision.position||'Position à confirmer',status:'pending',choice:'',detail:'',read:false});state.unreadCalls=Math.max(1,state.unreadCalls||0)};
  if(state.setupComplete){if(!state.contracts.length)state.contracts=Array.from({length:freightMarketSize()},makeContract);if(!state.candidates.length)state.candidates=Array.from({length:candidateMarketSize()},newDriver);if(!state.usedTrucks.length)state.usedTrucks=Array.from({length:6},makeUsedTruckListing);if(!state.usedTrailers.length)state.usedTrailers=Array.from({length:6},makeUsedTrailerListing)}
@@ -534,15 +614,17 @@ function initShell(){
  document.getElementById('minimizeWindow').onclick=e=>{e.stopPropagation();windowMinimized=true;syncWindowShell()};
  document.getElementById('restoreWindow').onclick=e=>{e.stopPropagation();windowMinimized=false;syncWindowShell()};
  document.getElementById('decisionCount').onclick=e=>{e.stopPropagation();showCallHistory()};document.getElementById('tourCount').onclick=e=>{e.stopPropagation();showDeliveryHistory()};document.getElementById('notifSummary').onclick=e=>{e.stopPropagation();showNotificationHistory()};
- document.getElementById('saveStatus')?.addEventListener('click',e=>{e.stopPropagation();save(true)});document.getElementById('audioToggle').onclick=e=>{e.stopPropagation();toggleAudio()};document.addEventListener('pointerdown',e=>{if(e.target.closest?.('button,[role=button],select,.navbtn,.start-item,.desktop-shortcut'))playRetroClick()},{capture:true});
+ document.getElementById('bootProfile').onclick=e=>{e.stopPropagation();startSession()};
+ document.addEventListener('pointerdown',e=>{if(e.target.closest?.('button,[role=button],select,.navbtn,.start-item,.desktop-shortcut,.wallpapercard,.boot-user'))playRetroClick()},{capture:true});
  document.addEventListener('click',e=>{const menu=document.getElementById('startMenu'),btn=document.getElementById('startButton');if(startMenuOpen&&menu&&!menu.contains(e.target)&&btn&&!btn.contains(e.target)){startMenuOpen=false;syncWindowShell()}});
 }
 function navRender(){
  const meta=viewMeta(currentView);
- document.getElementById('nav').innerHTML=`<div class="start-program-title">Programmes</div>${NAV.map(n=>`<button class="start-item ${currentView===n.id?'active':''}" data-nav="${n.id}"><span class="ico">${n.icon}</span><span>${n.label}</span>${n.id==='planning'&&state.activeTours.length?`<span class="badge">${state.activeTours.length}</span>`:''}</button>`).join('')}`;
+ document.getElementById('nav').innerHTML=`<div class="start-program-title">Programmes</div>${NAV.map(n=>`<button class="start-item ${currentView===n.id?'active':''}" data-nav="${n.id}"><span class="ico">${n.icon}</span><span>${n.label}</span>${n.id==='planning'&&state.activeTours.length?`<span class="badge">${state.activeTours.length}</span>`:''}</button>`).join('')}<div class="start-section-title">Options</div><button class="start-item" data-special="options"><span class="ico">⚙</span><span>Options</span></button>`;
  const shortcuts=[...NAV.slice(0,6),{id:'finance',icon:'€',label:'Finances'}].filter((v,i,a)=>a.findIndex(x=>x.id===v.id)===i);
  document.getElementById('desktopIcons').innerHTML=shortcuts.map(n=>`<button class="desktop-shortcut ${meta.id===n.id?'active':''}" data-nav="${n.id}"><span class="desktop-ico">${n.icon}</span><span>${n.label}</span></button>`).join('');
  document.querySelectorAll('[data-nav]').forEach(b=>b.onclick=e=>{e.stopPropagation();openViewWindow(b.dataset.nav)});
+ document.querySelector('[data-special="options"]')?.addEventListener('click',e=>{e.stopPropagation();showOptionsModal()});
 }
 function updateSystemCounters(){
  const calls=Math.max(0,Number(state?.unreadCalls)||0),notes=Math.max(0,Number(state?.unreadNotifications)||0),deliveries=Math.max(0,Number(state?.unreadDeliveries)||0);
@@ -551,14 +633,15 @@ function updateSystemCounters(){
  const startNotif=document.getElementById('startNotifications'),hint=document.getElementById('startDecisionHint');if(startNotif)startNotif.textContent=`${calls+notes+deliveries} non lue(s)`;if(hint)hint.textContent=state?.pendingDecision?'Un chauffeur attend une décision':'Aucune décision urgente';
 }
 function topRender(){
- const parts=calendarParts();document.title=`${state.company||'Entreprise de transport'} · Simulation`;
+ const parts=calendarParts();document.title=`${state.company||'Entreprise de transport'} · Simulation`;applyWallpaper(state.wallpaper);
  document.getElementById('companyName').textContent=state.company||'Nouvelle entreprise';document.getElementById('startCompanyName').textContent=state.company||'Nouvelle entreprise';
+ document.getElementById('bootCompanyName').textContent=state.company||'Nouvelle entreprise';document.getElementById('bootCompanyStatus').textContent=state.setupComplete?`Dépôt principal · ${state.depot}`:'Clique ici pour créer ton entreprise';
  document.getElementById('cashTop').textContent=euro(state.cash);document.getElementById('repTop').textContent=`${Math.round(state.reputation)} / 100`;document.getElementById('tourTop').textContent=state.activeTours.length;document.getElementById('fleetTop').textContent=`${state.trucks.filter(x=>x.status==='available').length}/${state.trucks.length}`;
  document.getElementById('trayTime').textContent=`${String(state.hour).padStart(2,'0')}:${String(state.minute).padStart(2,'0')}`;document.getElementById('trayDate').textContent=`${String(parts.day).padStart(2,'0')}/${String(parts.month).padStart(2,'0')}/${parts.year}`;
  document.getElementById('trayDateLarge').textContent=calendarLabel();document.getElementById('trayTimeLarge').textContent=`${String(state.hour).padStart(2,'0')}:${String(state.minute).padStart(2,'0')}`;
  document.getElementById('startDepot').textContent=state.depot||'À choisir';document.getElementById('startReputation').textContent=`${Math.round(state.reputation)} / 100`;document.getElementById('startRepTier').textContent=`${repTier().name} · ${state.stats.deliveries} livraisons`;
  ['pauseBtn','playBtn','fastBtn'].forEach(id=>document.getElementById(id).classList.remove('active'));document.getElementById(playSpeed===0?'pauseBtn':playSpeed===1?'playBtn':'fastBtn').classList.add('active');
- const audioButton=document.getElementById('audioToggle');if(audioButton){audioButton.textContent=audioMuted?'🔇':'🔊';audioButton.title=audioMuted?'Réactiver la musique':'Couper la musique'}updateSystemCounters();
+ updateSystemCounters();
 }
 function render(){initShell();navRender();topRender();syncGameAudio();const v=document.getElementById('view');v.innerHTML=currentView==='dashboard'?dashboardView():currentView==='freight'?freightView():currentView==='planning'?planningView():currentView==='fleet'?fleetView():currentView==='drivers'?driversView():currentView==='maintenance'?maintenanceView():financeView();bindView();syncWindowShell();save()}
 
@@ -717,7 +800,7 @@ const actions={
  refreshDrivers:()=>{if(spend(250,'Cabinet de recrutement')){state.candidates=Array.from({length:candidateMarketSize()},newDriver);render()}},
  exportSave:exportSave,
  refreshUsed:()=>refreshUsedMarket(false),
- resetGame:()=>showConfirm('Recommencer la partie','La sauvegarde actuelle sera effacée et tu recréeras ton entreprise.',()=>{safeClearSave();state=initialState();currentView='dashboard';selectedContract=null;plannerQueue=[];fleetTab='trucks';marketTab='new';render();showCompanySetup()})
+ resetGame:()=>showConfirm('Recommencer la partie','La sauvegarde actuelle sera effacée et tu recréeras ton entreprise.',()=>{safeClearSave();state=initialState();audioMuted=!!state.audioMuted;currentView='dashboard';selectedContract=null;plannerQueue=[];fleetTab='trucks';marketTab='new';render();showStartupScreen()})
 };
 function spend(amount,label,detail=''){if(state.cash<amount){toast('Trésorerie insuffisante.','bad');return false}state.cash-=amount;addLog('expense',label,-amount,detail);return true}
 function creditRateFor(kind,index){return (30+((state.day*17+index*13+(kind==='truck'?7:3))%51))/1000}
@@ -863,7 +946,9 @@ function syncGameAudio(){
  const target=state?.pendingDecision?'warning':'main';if(currentMusic===target&&!(target==='warning'?warningMusic:mainMusic).paused)return;
  if(target==='warning'){mainMusic.pause();warningMusic.currentTime=0;warningMusic.play().catch(()=>{});currentMusic='warning'}else{warningMusic.pause();warningMusic.currentTime=0;mainMusic.play().catch(()=>{});currentMusic='main'}
 }
-function toggleAudio(){audioMuted=!audioMuted;if(!audioMuted)audioUnlocked=true;syncGameAudio();topRender()}
+function toggleAudio(){audioMuted=!audioMuted;state.audioMuted=audioMuted;if(!audioMuted)audioUnlocked=true;syncGameAudio();topRender();save()}
+function showOptionsModal(){startMenuOpen=false;syncWindowShell();const current=currentWallpaper();document.getElementById('modalRoot').innerHTML=`<div class="modalback"><div class="modal history-modal" style="max-width:980px"><div class="modalhead"><h2>Options</h2><button class="close" data-close>×</button></div><div class="modalbody"><div class="optiongrid"><div class="optionpanel"><h3>Système</h3><p>Centralise ici la musique, la sauvegarde, le nom de l'entreprise et les remises à zéro.</p><div class="optionactions"><button class="btn" id="optToggleAudio">${audioMuted?'Activer la musique':'Couper la musique'}</button><button class="btn" id="optSaveGame">Sauvegarder maintenant</button><button class="btn" id="optExportGame">Exporter la sauvegarde</button></div><div class="dangerzone"><div class="optionform"><div class="field"><label>Nom de l'entreprise</label><input class="inputline" id="optCompanyName" maxlength="36" value="${escapeHtml(state.company||'')}" placeholder="Nom de l'entreprise"></div><div class="optionrow"><button class="btn primary" id="optRenameCompany">Enregistrer le nom</button><span class="mutedline">Le profil d'accueil affichera automatiquement ce nom.</span></div></div><div class="optionrow" style="margin-top:14px"><button class="btn danger" id="optResetGame">Repartir à zéro</button><span class="mutedline">Supprime la partie locale et relance un nouveau démarrage.</span></div></div></div><div class="optionpanel"><h3>Fond d'écran</h3><p>Choisis le papier peint du bureau parmi les visuels parodiques de transport que tu as fournis.</p><div class="wallpapergrid">${WALLPAPERS.map(w=>`<button class="wallpapercard ${w.id===current.id?'active':''}" data-wallpaper="${w.id}"><img src="${w.src}" alt="${w.label}"><b>${w.label}</b><small>${w.id===current.id?'Actuellement affiché':'Cliquer pour appliquer'}</small></button>`).join('')}</div></div></div></div><div class="modalfoot"><button class="btn" data-close>Fermer</button></div></div></div>`;document.querySelectorAll('[data-close]').forEach(x=>x.onclick=closeModal);document.getElementById('optToggleAudio').onclick=()=>{toggleAudio();showOptionsModal()};document.getElementById('optSaveGame').onclick=()=>save(true);document.getElementById('optExportGame').onclick=()=>exportSave();document.getElementById('optRenameCompany').onclick=()=>{const input=document.getElementById('optCompanyName');const value=input.value.trim();if(value.length<2){toast('Le nom de l’entreprise doit comporter au moins deux caractères.','bad');input.focus();return}state.company=value;save();render();showOptionsModal();toast('Nom de l’entreprise mis à jour.','good',false)};document.getElementById('optResetGame').onclick=()=>showConfirm('Repartir à zéro','La partie locale sera supprimée. Tu reviendras à l’écran d’accueil avant de recréer ton entreprise.',()=>{safeClearSave();state=initialState();audioMuted=!!state.audioMuted;selectedContract=null;plannerQueue=[];currentView='dashboard';fleetTab='trucks';marketTab='new';closeModal();render();showStartupScreen()});document.querySelectorAll('[data-wallpaper]').forEach(b=>b.onclick=()=>{applyWallpaper(b.dataset.wallpaper);save();render();showOptionsModal()})}
+
 function showMessage(title,html){document.getElementById('modalRoot').innerHTML=`<div class="modalback"><div class="modal"><div class="modalhead"><h2>${title}</h2><button class="close" data-close>×</button></div><div class="modalbody">${html}</div><div class="modalfoot"><button class="btn primary" data-close>Compris</button></div></div></div>`;document.querySelectorAll('[data-close]').forEach(x=>x.onclick=closeModal)}
 function showConfirm(title,text,ok){document.getElementById('modalRoot').innerHTML=`<div class="modalback"><div class="modal"><div class="modalhead"><h2>${title}</h2><button class="close" data-close>×</button></div><div class="modalbody"><p style="color:var(--muted);margin:0">${text}</p></div><div class="modalfoot"><button class="btn" data-close>Annuler</button><button class="btn danger" id="confirmOk">Confirmer</button></div></div></div>`;document.querySelectorAll('[data-close]').forEach(x=>x.onclick=closeModal);document.getElementById('confirmOk').onclick=()=>{closeModal();ok()}}
 function closeModal(){document.getElementById('modalRoot').innerHTML=''}
@@ -880,7 +965,7 @@ document.addEventListener('pointerdown',unlockAudio,{once:true,capture:true});do
 window.addEventListener('error',e=>{console.error(e.error||e.message);if(state?.setupComplete)toast('Une erreur interne a été interceptée. Le jeu continue sans clic silencieux.','bad')});
 window.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='s'){e.preventDefault();save(true)}});
 window.addEventListener('beforeunload',save);
-load();render();if(!state.setupComplete)setTimeout(showCompanySetup,180);else if(state.tutorial)setTimeout(tutorial,250);else if(state.pendingDecision)setTimeout(openPendingDecision,220);
+load();render();showStartupScreen();
 </script>
 </body>
 </html>
